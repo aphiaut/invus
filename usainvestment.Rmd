@@ -1,0 +1,124 @@
+---
+title: "USA Investment"
+author: "Aphiaut Imuan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(lubridate)
+library(kableExtra)
+library(broom)
+library(readxl)
+library(plotly)
+library(DT)
+```
+
+
+
+```{r dataset, echo=FALSE}
+investment <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-08-10/investment.csv')
+chain_investment <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-08-10/chain_investment.csv')
+ipd <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-08-10/ipd.csv')
+gdplev <- read_excel("gdplev.xlsx", range = "A9:C101", 
+    col_names = FALSE, col_types = c("numeric", 
+        "numeric", "numeric"))
+gdplev <- gdplev %>%
+  rename("year" = ...1,
+         "GDP_current" = ...2,
+         "GDP_chain" = ...3)
+```
+
+# Introduction and motivation
+
+
+Infrastructure investment is an important part of the country. It includes federal investments such as water suppliers and private sector investments that manages electricity. It also includes the cost of research and development in technology.
+
+Moreover, infrastructure investment plays a role in supporting both businesses and households. For example, the development of logistics in business sector has resulted in reduction of transportation cost. Households can access infrastructure services and can choose what and how to use. It also has a positive affect on both short-term and long-term economic growth. [(Stupak, 2017)](https://ecommons.cornell.edu/bitstream/handle/1813/78289/CRS_Economic_Impact_of_Infrastructure_Investment_0717.pdf?sequence=1&isAllowed=y)
+
+As mentioned above, the case study should be of USA's infrastructure because USA is a big country. It has large population, and people can access infrastructure services easily. Furthermore, USA also has the world's largest economy. 
+
+# Data description
+
+
+The data comes from [Bureau of Economic Analysis](https://www.bea.gov/system/files/papers/BEA-WP2020-12.pdf). The raw .xlsx file is included, or can be downloaded directly from the [BEA Working paper series](https://www.bea.gov/system/files/2021-01/infrastructure-data-may-2020.xlsx).
+
+There are 3 primary data sets are already cleaned and saved as .csv files and they all have five variables.
+
+**For investment dataset-**
+
+```{r, echo=FALSE}
+tibble(
+  "Variable" = colnames(investment),
+  "Class" = c("character", "character",
+              "number","number","number"
+              ),
+  "Description" = c("Category of Investment",
+                    "Group Category of Investment", 
+                    "Group number of investment",
+                    "Year of investment", 
+                    "Gross investment in millions of USD")
+  ) %>%
+  DT::datatable()
+```
+
+**For Chain Investment-**
+
+```{r}
+tibble(
+  "Variable" = colnames(chain_investment),
+  "Class" = c("character", "character",
+              "number","number","number"
+              ),
+  "Description" = c("Category of Investment",
+                    "Group Category of Investment", 
+                    "Group number of investment",
+                    "Year of investment", 
+                    "	Gross investment (chained 2021 dollars) in millions of USD.")
+  ) %>%
+  DT::datatable()
+```
+
+**For IPD (Implicit Price Deflators) -** 
+
+```{r}
+tibble(
+  "Variable" = colnames(ipd),
+  "Class" = c("character", "character",
+              "number","number","number"
+              ),
+  "Description" = c("Category of Investment",
+                    "Group Category of Investment", 
+                    "Group number of investment",
+                    "Year of investment", 
+                    "Implicit Price Deflators (IPDs) An implicit price deflator is the ratio of the current-dollar value of a series, such as gross domestic product (GDP), to its corresponding chained-dollar value, multiplied by 100.")
+  ) %>%
+  datatable()
+```
+
+
+
+The gdplev data set is downloaded from [Bureau of Economic Analysis](https://www.bea.gov/data/gdp/gross-domestic-product), which is a supplementary data set for our analysis. It records the current GDP and chain GDP in US from 1929 to 2021. Its variable contains year, GDP_current and GDP_chain whose type is all double.
+
+**For gdplev data set -**
+
+```{r}
+tibble(
+  "Variable" = colnames(gdplev),
+  "Class" = c("number","number","number"),
+  "Description" = c("Year",
+                    "GDP in billions of current dollars", 
+                    "GDP in billions of chained 2012 dollars")
+  ) %>%
+  DT::datatable()
+
+```
+
+
+- Chained dollars: Chained dollars is a method of adjusting real dollar amounts for inflation over time, to allow the comparison of figures from different years. The U.S. Department of Commerce introduced the chained-dollar measure in 1996.
